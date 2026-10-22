@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Calculadora</title>
+        <link rel="stylesheet" href="estilos.css">
+    </head>
+    <body>
+        <div class="calculadora">
+            <div class="display">
+                <div id="previous-operand"></div>
+                <div id="current-operand">0</div>
+            </div>
+
+            <button class="col-2" onclick="clearDisplay()">AC</button>
+            <button onclick="deleteNumber()">DEL</button>
+            <button class="operator" onclick="chooseOperator('/')">÷</button>
+    
+            <button onclick="appendNumber('7')">7</button>
+            <button onclick="appendNumber('8')">8</button>
+            <button onclick="appendNumber('9')">9</button>
+            <button class="operator" onclick="chooseOperator('*')">×</button>
+    
+            <button onclick="appendNumber('4')">4</button>
+            <button onclick="appendNumber('5')">5</button>
+            <button onclick="appendNumber('6')">6</button>
+            <button class="operator" onclick="chooseOperator('-')">-</button>
+    
+            <button onclick="appendNumber('1')">1</button>
+            <button onclick="appendNumber('2')">2</button>
+            <button onclick="appendNumber('3')">3</button>
+            <button class="operator" onclick="chooseOperator('+')">+</button>
+    
+            <button class="col-2" onclick="appendNumber('0')">0</button>
+            <button onclick="appendNumber('.')">.</button>
+            <button class="operator" onclick="compute()">=</button>
+        </div>
+
+        <script>
+            let currentText = '0';
+            let previousText = '';
+            let operation = undefined;
+
+            const currentDisplay = document.getElementById('current-operand');
+            const previousDisplay = document.getElementById('previous-operand');
+
+            function updateDisplay() {
+                currentDisplay.innerText = currentText;
+                previousDisplay.innerText = previousText + (operation || '');   
+            }
+
+            function appendNumber(number) {
+                if (number === '.' && currentText.includes('.')) return;
+                if (currentText === '0' && number !== '.') currentText = number;
+                else currentText += number;
+                updateDisplay();
+            }
+
+            function chooseOperator(op) {
+                if (currentText === '') return;
+                if (previousText !== '') compute();
+                operation = op;
+                previousText = currentText;
+                currentText = '';
+                updateDisplay();
+            }
+
+            function compute() {
+                let computation;
+                const prev = parseFloat(previousText);
+                const current = parseFloat(currentText);
+                
+                if (isNaN(prev) || isNaN(current)) return;
+                switch (operation) {
+                case '+': computation = prev + current; break;
+                case '-': computation = prev - current; break;
+                case '*': computation = prev * current; break;
+                case '/': computation = prev / current; break;
+                default: return;
+                }
+
+                currentText = computation.toString();
+                operation = undefined;
+                previousText = '';
+                updateDisplay();
+            }
+
+            function clearDisplay() {
+                currentText = '0';
+                previousText = '';
+                operation = undefined;
+                updateDisplay();
+            }
+
+            function deleteNumber() {
+                currentText = currentText.slice(0, -1);
+                if (currentText === '') currentText = '0';
+                updateDisplay();
+            }   
+        </script>
+    </body>
+</html>
